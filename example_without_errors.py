@@ -29,16 +29,17 @@ def second_handler(value: int) -> int:
     return value % 1
 
 
+# > Изменение имени параметра handlers (не обязательно, но хорошо если было подмечено)
 # > Хинтинг параметров:
 # 1) hanlders: в Callable для входных параметор используется список, внутри которого перечисляются типы параметров, иначе не взлетит
 # 2) values: по множественному числу и итерации внутри функции - можно понять, что это последовательность целых чисел
 # > Замена lambda на partial, чтобы код начал действительно работать как задумывалось (производить нужные рассчеты)
 # Без этого - фактически список будет заполнен только последней функцией из параметра hanlders (second_handler), при этом аргумент у функции вообще везде будет последним значением из values (4)
 # > Хинтинг возвращаемого значения
-def get_chain_handlers(hanlders: Iterable[Callable[[int], int]], values: Iterable[int]) -> list[Callable[[], int]]:
+def get_chain_handlers(handlers: Iterable[Callable[[int], int]], values: Iterable[int]) -> list[Callable[[], int]]:
     chain_handlers = []
 
-    for handler in hanlders:
+    for handler in handlers:
         for value in values:
             chain_handlers.append(partial(handler, value))
 
@@ -61,8 +62,8 @@ def get_result(chain_handlers: Iterable[Callable[[], int]]) -> int:
 
 # > Исправление названия функции first_handler, иначе не взлетит (не обязательно, но хорошо если было подмечено)
 # > Удалена лишняя 3 в values (не обязательно, но хорошо если было подмечено)
-hanlders=(first_handler, second_handler)
+handlers=(first_handler, second_handler)
 values={2, 3, 4}
-chain_handlers=get_chain_handlers(hanlders=hanlders, values=values)
+chain_handlers=get_chain_handlers(handlers=handlers, values=values)
 result = get_result(chain_handlers=chain_handlers)
 print(result)
